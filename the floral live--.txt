@@ -1,0 +1,15 @@
+the floral live--
+1]ssh root@31.97.233.107
+2]cd /var/www
+3]cd floralstudio
+4] cd thefloralstudio
+5]ls
+6]nano base.html
+
+
+gunicorn --bind unix:/run/gunicorn.sock floralstudio.wsgi:application     
+
+
+myside server--
+admin-plants
+pass- plants12345

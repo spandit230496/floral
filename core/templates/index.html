@@ -4,24 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}The Floral Studio{% endblock %}</title>
+
+  <!-- Swiper CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script> <!-- Replace with your FA kit -->
+
+  <!-- FontAwesome Free CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body class="bg-white text-gray-800">
 
-  <!-- ✅ Navbar -->
+  <!-- Navbar -->
   <nav class="bg-white shadow-md fixed w-full z-50 top-0 left-0">
     <div class="max-w-screen-xl mx-auto px-4 flex justify-between items-center h-16">
       <!-- Logo -->
       <div class="text-xl font-bold flex items-center gap-2">
         <a href="/">
-        {% if site_settings and site_settings.logo %}
-  <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.site_name }}" class="h-10 w-auto">
-{% else %}
-  <span class="text-xl font-bold text-green-800">{{ site_settings.site_name }}</span>
-{% endif %}
-
+          {% if site_settings and site_settings.logo %}
+            <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.site_name }}" class="h-10 w-auto" />
+          {% else %}
+            <span class="text-xl font-bold text-green-800">{{ site_settings.site_name }}</span>
+          {% endif %}
         </a>
       </div>
 
@@ -32,7 +37,7 @@
         {% endfor %}
         <li>
           <a href="{% url 'cart_view' %}" class="relative">
-            🛒 Cart
+            <i class="fas fa-shopping-cart"></i> Cart
             {% if cart_items_count %}
               <span class="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
                 {{ cart_items_count }}
@@ -41,39 +46,38 @@
           </a>
         </li>
 
-       {% if user.is_authenticated %}
-    <li><a href="{% url 'profile' %}" class="text-gray-700 hover:text-blue-600">Profile</a></li>
-    
-    <!-- 🔥 Use POST form for logout -->
-    <li>
-      <form method="POST" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit" class="text-gray-700 hover:text-red-600">Logout</button>
-      </form>
-    </li>
-  {% else %}
-    <li><a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600">Login</a></li>
-    <li><a href="{% url 'signup' %}" class="text-gray-700 hover:text-blue-600">Signup</a></li>
-  {% endif %}
+        {% if user.is_authenticated %}
+          <li><a href="{% url 'profile' %}" class="text-gray-700 hover:text-blue-600">Profile</a></li>
+          <li>
+            <form method="POST" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="text-gray-700 hover:text-red-600">Logout</button>
+            </form>
+          </li>
+        {% else %}
+          <li><a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600">Login</a></li>
+          <li><a href="{% url 'signup' %}" class="text-gray-700 hover:text-blue-600">Signup</a></li>
+        {% endif %}
+      </ul>
 
       <!-- Mobile Menu Button -->
       <div class="md:hidden">
-        <button id="menu-toggle" class="text-2xl">&#9776;</button>
+        <button id="menu-toggle" class="text-2xl focus:outline-none">&#9776;</button>
       </div>
     </div>
 
     <!-- Mobile Dropdown -->
-    <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-2">
+    <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-2 bg-white shadow-md">
       {% for link in nav_links %}
         <a href="{{ link.url }}" class="block text-gray-700 hover:text-blue-600">{{ link.name }}</a>
       {% endfor %}
-      <a href="{% url 'cart_view' %}" class="block">🛒 Cart</a>
+      <a href="{% url 'cart_view' %}" class="block text-gray-700 hover:text-blue-600"><i class="fas fa-shopping-cart"></i> Cart</a>
       {% if user.is_authenticated %}
         <a href="{% url 'profile' %}" class="block text-gray-700 hover:text-blue-600">Profile</a>
         <form method="POST" action="{% url 'logout' %}">
-  {% csrf_token %}
-  <button type="submit" class="text-sm font-medium text-gray-800 hover:text-green-600">Logout</button>
-</form>
+          {% csrf_token %}
+          <button type="submit" class="w-full text-left text-gray-700 hover:text-red-600">Logout</button>
+        </form>
       {% else %}
         <a href="{% url 'login' %}" class="block text-gray-700 hover:text-blue-600">Login</a>
         <a href="{% url 'signup' %}" class="block text-gray-700 hover:text-blue-600">Signup</a>
@@ -81,7 +85,7 @@
     </div>
   </nav>
 
-  <!-- ✅ Flash Messages -->
+  <!-- Flash Messages -->
   {% if messages %}
     <div class="fixed top-20 right-5 z-50 space-y-2">
       {% for message in messages %}
@@ -92,13 +96,30 @@
     </div>
   {% endif %}
 
-  <!-- ✅ Main Content -->
+  <!-- Main Content -->
   <main class="pt-20">
     {% block content %}{% endblock %}
+
+    <!-- About Section -->
+    {% if about %}
+    <section id="about" class="py-16 bg-gray-100">
+      <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-8 items-center">
+        {% if about.image %}
+          <div>
+            <img src="{{ about.image.url }}" alt="{{ about.title }}" class="rounded-xl shadow-md" />
+          </div>
+        {% endif %}
+        <div>
+          <h2 class="text-3xl font-bold mb-4">{{ about.title }}</h2>
+          <p class="text-lg text-gray-700 leading-relaxed">{{ about.content }}</p>
+        </div>
+      </div>
+    </section>
+    {% endif %}
   </main>
 
-  <!-- ✅ Footer -->
-  <footer class="bg-gray-900 text-white py-10">
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-10 mt-10">
     <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
       <!-- Quick Links -->
       <div>
@@ -109,8 +130,6 @@
           <li><a href="/contact/" class="hover:text-white">Contact</a></li>
         </ul>
       </div>
-
-    
 
       <!-- Social Links -->
       <div>
@@ -130,24 +149,24 @@
     </div>
   </footer>
 
-  <!-- ✅ Toast Message (Optional) -->
+  <!-- Toast Message -->
   <div id="toast-msg" class="fixed bottom-6 right-6 z-50 hidden bg-green-600 text-white font-medium px-5 py-3 rounded-lg shadow-xl transition-all duration-500 opacity-0">
     Message here
   </div>
 
-  <!-- ✅ Scripts -->
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-  <script>
-    // Auto-hide flash messages
-    setTimeout(() => {
-      const messages = document.querySelectorAll('.fixed.top-20');
-      messages.forEach(msg => msg.remove());
-    }, 3000);
 
-    // Toggle mobile menu
-    document.getElementById("menu-toggle")?.addEventListener("click", () => {
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const toggle = document.getElementById("menu-toggle");
       const menu = document.getElementById("mobile-menu");
-      if (menu) menu.classList.toggle("hidden");
+
+      if (toggle && menu) {
+        toggle.addEventListener("click", () => {
+          menu.classList.toggle("hidden");
+        });
+      }
     });
   </script>
 

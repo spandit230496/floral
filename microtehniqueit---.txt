@@ -1,0 +1,7 @@
+microtehniqueit--- 
+
+
+
+linkedin---  
+cicsb-command for hositnger 
+master branch on git- development for pipe line deploy.sh(local folder) connect our server - add user name password 

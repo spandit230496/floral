@@ -2,46 +2,59 @@
 {% load static %}
 
 {% block content %}
-<div class="bg-gray-100 min-h-screen py-10 px-4">
-  <h2 class="text-4xl font-bold text-center text-gray-800 mb-10">Explore Our Carpets</h2>
+<div class="bg-gray-50 min-h-screen py-12 px-6">
+  <h2 class="text-4xl font-extrabold text-center text-green-800 mb-12 tracking-tight">
+    Explore Our Carpets
+  </h2>
 
-  <!-- Carpet Grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+  {% if page_obj %}
+  <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
     {% for carpet in page_obj %}
-    <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden">
-      <img src="{{ carpet.image.url }}" alt="{{ carpet.title }}" class="w-full h-60 object-cover">
-      <div class="p-5">
-        <h3 class="text-xl font-semibold text-gray-800 mb-1">{{ carpet.title }}</h3>
-        <p class="text-lg text-gray-600 mb-4">₹{{ carpet.price }}</p>
+    <div class="bg-white rounded-3xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col">
+      <img src="{{ carpet.image.url }}" alt="{{ carpet.title }}" class="w-full h-64 object-cover rounded-t-3xl" />
+      <div class="p-6 flex flex-col flex-grow">
+        <h3 class="text-xl font-semibold text-gray-900 mb-2 truncate">{{ carpet.title }}</h3>
+        <p class="text-green-700 font-semibold text-lg mb-6">₹{{ carpet.price|floatformat:0 }}</p>
 
-        <form method="post" action="{% url 'add_to_cart' carpet.id %}">
+        <form method="post" action="{% url 'add_to_cart' carpet.id %}" class="mt-auto">
           {% csrf_token %}
-          <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 px-4 rounded-xl transition duration-300">
+          <button type="submit"
+            class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-xl shadow-md transition transform hover:-translate-y-0.5"
+          >
             Add to Cart
           </button>
         </form>
       </div>
     </div>
-    {% empty %}
-    <div class="col-span-3 text-center text-gray-500 text-lg">
-      No carpets available.
-    </div>
     {% endfor %}
   </div>
 
-  <!-- Pagination Controls -->
-  <div class="mt-12 flex justify-center space-x-4">
+  <!-- Pagination -->
+  <nav aria-label="Pagination" class="mt-14 flex justify-center items-center space-x-6">
     {% if page_obj.has_previous %}
-      <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-200 transition">← Previous</a>
+    <a href="?page={{ page_obj.previous_page_number }}"
+      class="px-5 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+    >
+      ← Previous
+    </a>
     {% endif %}
 
-    <span class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg">
+    <span class="text-lg font-medium text-gray-700" aria-current="page">
       Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
     </span>
 
     {% if page_obj.has_next %}
-      <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-200 transition">Next →</a>
+    <a href="?page={{ page_obj.next_page_number }}"
+      class="px-5 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+    >
+      Next →
+    </a>
     {% endif %}
-  </div>
+  </nav>
+  {% else %}
+  <p class="text-center text-gray-500 text-lg mt-20">
+    No carpets available at the moment. Please check back later.
+  </p>
+  {% endif %}
 </div>
 {% endblock %}

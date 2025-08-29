@@ -1,29 +1,63 @@
 {% extends 'index.html' %}
+{% load widget_tweaks %}
+
 {% block content %}
+<div style="min-height: 100vh; background: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1470&q=80') no-repeat center center/cover; display: flex; align-items: center; justify-content: center; font-family: 'Segoe UI', sans-serif;">
+  <div style="background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); padding: 40px 30px; border-radius: 15px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2); width: 100%; max-width: 450px;">
 
-<div class="min-h-screen bg-cover bg-center flex items-center justify-center" style="background-image: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1470&q=80');">
-  <div class="bg-white/90 backdrop-blur-md px-8 py-10 rounded-2xl shadow-2xl w-full max-w-md">
-
-    <h2 class="text-2xl sm:text-3xl font-semibold text-blue-700 text-center mb-6">
-      ✨ Create Your Account
+    <!-- Heading -->
+    <h2 style="font-size: 28px; font-weight: 600; color: #2f855a; text-align: center; margin-bottom: 25px;">
+      🌸 Create Your Account
     </h2>
 
-    <form method="POST" class="space-y-4">
+    <!-- Signup Form -->
+    <form method="POST">
       {% csrf_token %}
-      {{ form.as_p }}
+      {{ form.non_field_errors }}
 
-      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-lg font-medium transition duration-300">
+      <!-- Styled Input Fields -->
+      {% for field in form %}
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; font-size: 16px; margin-bottom: 8px; color: #2f855a;">
+          {{ field.label }}
+        </label>
+        {{ field|add_class:"signup-input" }}
+        {% if field.errors %}
+          <div style="color: red; font-size: 14px; margin-top: 5px;">
+            {{ field.errors|join:", " }}
+          </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <!-- Submit Button -->
+      <button type="submit" style="width: 100%; background-color: #38a169; border: none; color: white; padding: 14px; font-size: 18px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease;">
         Sign Up
       </button>
     </form>
 
-    <p class="mt-5 text-center text-gray-700">
+    <!-- Links -->
+    <p style="margin-top: 20px; text-align: center; color: #4a5568;">
       Already have an account?
-      <a href="{% url 'login' %}" class="text-blue-600 font-medium hover:underline">
-        Login
-      </a>
+      <a href="{% url 'login' %}" style="color: #2b6cb0; font-weight: 500; text-decoration: none;">Login</a>
     </p>
   </div>
 </div>
 
+<!-- Inline Styles for Inputs -->
+<style>
+  input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #2f855a;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: #38a169;
+    box-shadow: 0 0 5px rgba(56, 161, 105, 0.5);
+  }
+</style>
 {% endblock %}

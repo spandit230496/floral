@@ -1,89 +1,102 @@
-{% extends 'index.html' %}
+{% extends 'core/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Checkout</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to right, #c9d6ff, #e2e2e2); /* Soft blue to light grey */
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+{% load custom_tags %}
+{% block content %}
+<div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
+    <h2 class="text-2xl font-bold mb-4">Checkout for Order #{{ order.id }}</h2>
 
-        .checkout-box {
-            background-color: #fdfbff; /* pastel lavender */
-            padding: 40px;
-            border-radius: 12px;
-            width: 400px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        }
+    <table class="w-full text-left mb-4 border">
+        <thead>
+            <tr>
+                <th class="px-2 py-1 border">Item</th>
+                <th class="px-2 py-1 border">Qty</th>
+                <th class="px-2 py-1 border">Price</th>
+                <th class="px-2 py-1 border">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items.all %}
+            <tr>
+                <td class="px-2 py-1 border">{{ item.product.name }}</td>
+                <td class="px-2 py-1 border">{{ item.quantity }}</td>
+                <td class="px-2 py-1 border">₹{{ item.product.price }}</td>
+                <td class="px-2 py-1 border">₹{{ item.product.price|multiply:item.quantity }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="text-center py-2">Your cart is empty!</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-        h1 {
-            text-align: center;
-            color: #4b4b6b;
-            margin-bottom: 25px;
-            font-size: 28px;
-        }
-
-        label {
-            font-weight: 600;
-            display: block;
-            margin-top: 15px;
-            color: #333;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 6px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
-            background-color: #f7f7fa;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #7f5af0;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 16px;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #674ee3;
-        }
-    </style>
-</head>
-<body>
-    <div class="checkout-box">
-        <h1>Checkout</h1>
-        <form method="post">
-            {% csrf_token %}
-            
-            <label for="address">Shipping Address:</label>
-            <input type="text" id="address" name="address" required>
-
-            <label for="payment">Payment Method:</label>
-            <select id="payment" name="payment" required>
-                <option value="cod">Cash on Delivery</option>
-                <option value="card">Card</option>
-            </select>
-
-            <button type="submit">Place Order</button>
-        </form>
+    <div class="mb-4">
+        <p>Subtotal: ₹{{ total }}</p>
+        <p>Delivery Charge: ₹{{ delivery_charge }}</p>
+        <p class="font-bold">Grand Total: ₹{{ grand_total }}</p>
     </div>
-</body>
-</html>
+
+    <form id="checkout-form">
+        <div class="mb-4">
+            <label>Delivery Address:</label>
+            <textarea name="address" id="address" class="w-full border p-2 rounded" required></textarea>
+        </div>
+
+        <div class="mb-4">
+            <label>Phone Number:</label>
+            <input type="text" name="phone" id="phone" class="w-full border p-2 rounded" required>
+        </div>
+
+        <button id="rzp-button" type="button" class="bg-purple-600 text-white px-4 py-2 rounded">
+            Pay with Razorpay
+        </button>
+    </form>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+document.getElementById('rzp-button').onclick = function(e){
+    var options = {
+        "key": "{{ razorpay_key_id }}",
+        "amount": {{ grand_total|multiply:100|floatformat:"0" }},
+        "currency": "INR",
+        "name": "The Floral Studio",
+        "description": "Order #{{ order.id }}",
+        "order_id": "{{ razorpay_order_id }}",
+        "handler": function (response){
+            fetch("{% url 'payment_verify' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "success"){
+                    window.location.href = "{% url 'payment_success' %}?order_id={{ order.id }}&amount={{ grand_total }}&payment_id=" + response.razorpay_payment_id;
+                } else {
+                    alert("Payment verification failed. Please try again.");
+                }
+            })
+        },
+        "prefill": {
+            "name": "{{ request.user.username }}",
+            "email": "{{ request.user.email }}",
+            "contact": ""
+        },
+        "theme": {
+            "color": "#7c3aed"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+    e.preventDefault();
+}
+</script>
+
+
+{% endblock %}

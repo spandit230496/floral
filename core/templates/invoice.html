@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Invoice #{{ order.id }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; padding: 20px; }
+        h1, h2 { color: #2e7d32; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background-color: #2e7d32; color: white; }
+        .total { font-weight: bold; font-size: 1.2em; margin-top: 20px; }
+        .footer { margin-top: 50px; font-size: 0.9em; color: gray; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Invoice #{{ order.id }}</h1>
+    <p><strong>Order Date:</strong> {{ order.created_at|date:"M d, Y" }}</p>
+
+    <h2>Customer Details</h2>
+    <p>
+        {{ order.full_name }}<br />
+        {{ order.address }}<br />
+        {{ order.city }}, {{ order.state }} - {{ order.postal_code }}<br />
+        {{ order.email }}
+    </p>
+
+    <h2>Order Items</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price (₹)</th>
+                <th>Total (₹)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.product.price }}</td>
+                <td>{{ item.total_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p class="total">
+        Total Amount: ₹{{ total }}
+    </p>
+
+    <div class="footer">
+        <p>Thank you for shopping at The Floral Studio!</p>
+    </div>
+</body>
+</html>

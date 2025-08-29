@@ -2,20 +2,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{{ site.site_name }}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+  <meta charset="UTF-8" />
+  <title>{{ site.site_name }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-     <!--  Footer CSS -->
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'core/css/style.css' %}" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <style>
+  <style>
+    /* Swiper container & slides */
     .swiper {
       width: 100%;
       height: 100vh;
+    }
+    .swiper-slide {
+      position: relative;
+      background-size: cover;
+      background-position: center;
     }
     .slide-content {
       position: absolute;
@@ -25,145 +30,128 @@
       transform: translateY(-50%);
       z-index: 10;
     }
-    .swiper-slide {
-      position: relative;
-      background-size: cover;
-      background-position: center;
+
+    /* Custom swiper nav buttons */
+    .custom-swiper-btn {
+      width: 32px;
+      height: 32px;
+      background-color: #22c55e; /* Tailwind green-500 */
+      color: white;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+    }
+    .custom-swiper-btn:hover {
+      background-color: #16a34a; /* green-600 */
+      transform: scale(1.1);
+      box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4);
+    }
+    .swiper-button-prev::after,
+    .swiper-button-next::after {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    /* Fade in up animation */
+    @keyframes fade-in-up {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .animate-fade-in-up {
+      animation: fade-in-up 0.8s ease-out forwards;
+    }
+    .delay-100 {
+      animation-delay: 0.1s;
+    }
+    .delay-200 {
+      animation-delay: 0.2s;
+    }
+
+    /* Fade in animation */
+    @keyframes fade-in {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+    .animate-fade-in {
+      animation: fade-in 2s ease-in both;
     }
   </style>
-
-  <style>
-@keyframes fade-in-up {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-in-up {
-  animation: fade-in-up 1s ease-out both;
-}
-
-@keyframes fade-in {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-.animate-fade-in {
-  animation: fade-in 2s ease-in both;
-}
-</style>
-
-
-<style>
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  .animate-fade-in-up {
-    animation: fadeInUp 0.8s ease-out forwards;
-  }
-  .delay-100 {
-    animation-delay: 0.1s;
-  }
-  .delay-200 {
-    animation-delay: 0.2s;
-  }
-</style>
-
-<style>
-  .custom-swiper-btn {
-    width: 32px;
-    height: 32px;
-    background-color: #22c55e; /* Tailwind green-500 */
-    color: white;
-    border-radius: 999px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    transition: all 0.3s ease-in-out;
-  }
-
-  .custom-swiper-btn:hover {
-    background-color: #16a34a; /* green-600 */
-    transform: scale(1.1);
-    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4);
-  }
-
-  /* Override Swiper default arrow styles */
-  .swiper-button-prev::after,
-  .swiper-button-next::after {
-    font-size: 16px;
-    font-weight: bold;
-  }
-</style>
 </head>
+
 <body class="bg-white text-gray-900">
 
-<!-- ✅ Navbar -->
+<!-- Navbar -->
 <nav class="bg-white shadow-md fixed w-full z-50 top-0 left-0">
-   <div class="max-w-screen-xl mx-auto px-4 flex justify-between items-center h-16">
+  <div class="max-w-screen-xl mx-auto px-4 flex justify-between items-center h-16">
     <!-- Logo -->
     <div class="text-xl font-bold flex items-center gap-2">
       <a href="/">
-        <img src="{{ site.logo.url }}" alt="Logo" class="h-10">
+        <img src="{{ site.logo.url }}" alt="Logo" class="h-10" />
       </a>
     </div>
 
     <!-- Desktop Menu -->
     <ul class="hidden md:flex gap-6 items-center">
-  {% for link in nav_links %}
-    <li><a href="{{ link.url }}" class="text-gray-700 hover:text-blue-600">{{ link.name }}</a></li>
-  {% endfor %}
+      {% for link in nav_links %}
+        <li><a href="{{ link.url }}" class="text-gray-700 hover:text-blue-600">{{ link.name }}</a></li>
+      {% endfor %}
+      <li>
+        <a href="{% url 'cart_view' %}" class="relative">
+          🛒 Cart
+          {% if cart_items_count %}
+            <span class="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
+              {{ cart_items_count }}
+            </span>
+          {% endif %}
+        </a>
+      </li>
 
-  <li>
-    <a href="{% url 'cart_view' %}" class="relative">
-      🛒 Cart
-      {% if cart_items_count %}
-        <span class="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
-          {{ cart_items_count }}
-        </span>
+      {% if user.is_authenticated %}
+        <li><a href="{% url 'profile' %}" class="text-gray-700 hover:text-blue-600">Profile</a></li>
+        <li>
+          <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="text-gray-700 hover:text-red-600">Logout</button>
+          </form>
+        </li>
+      {% else %}
+        <li><a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600">Login</a></li>
+        <li><a href="{% url 'signup' %}" class="text-gray-700 hover:text-blue-600">Signup</a></li>
       {% endif %}
-    </a>
-  </li>
-
-  {% if user.is_authenticated %}
-    <li><a href="{% url 'profile' %}" class="text-gray-700 hover:text-blue-600">Profile</a></li>
-    
-    <!-- 🔥 Use POST form for logout -->
-    <li>
-      <form method="POST" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit" class="text-gray-700 hover:text-red-600">Logout</button>
-      </form>
-    </li>
-  {% else %}
-    <li><a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600">Login</a></li>
-    <li><a href="{% url 'signup' %}" class="text-gray-700 hover:text-blue-600">Signup</a></li>
-  {% endif %}
-</ul>
-
+    </ul>
 
     <!-- Mobile Menu Button -->
     <div class="md:hidden">
-      <button id="menu-toggle" class="text-2xl">&#9776;</button>
+      <button id="menu-toggle" class="text-2xl" aria-label="Toggle menu">&#9776;</button>
     </div>
   </div>
 
   <!-- Mobile Dropdown -->
-  <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-2">
+  <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-2 bg-white shadow-md">
     {% for link in nav_links %}
       <a href="{{ link.url }}" class="block text-gray-700 hover:text-blue-600">{{ link.name }}</a>
     {% endfor %}
-    <a href="{% url 'cart_view' %}" class="block relative">🛒 Cart</a>
+    <a href="{% url 'cart_view' %}" class="block relative text-gray-700 hover:text-blue-600">🛒 Cart</a>
     {% if user.is_authenticated %}
       <a href="{% url 'profile' %}" class="block text-gray-700 hover:text-blue-600">Profile</a>
-      <a href="{% url 'logout' %}" class="block text-gray-700 hover:text-red-600">Logout</a>
+      <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="w-full text-left text-gray-700 hover:text-red-600">Logout</button>
+      </form>
     {% else %}
       <a href="{% url 'login' %}" class="block text-gray-700 hover:text-blue-600">Login</a>
       <a href="{% url 'signup' %}" class="block text-gray-700 hover:text-blue-600">Signup</a>
@@ -175,42 +163,33 @@
   <div class="fixed top-5 right-5 z-50 space-y-2">
     {% for message in messages %}
       <div class="px-4 py-3 rounded shadow-lg text-white 
-                  {% if message.tags == 'success' %}bg-green-600
-                  {% elif message.tags == 'error' %}bg-red-600
-                  {% elif message.tags == 'info' %}bg-blue-600
-                  {% else %}bg-gray-800{% endif %}">
+          {% if message.tags == 'success' %}bg-green-600
+          {% elif message.tags == 'error' %}bg-red-600
+          {% elif message.tags == 'info' %}bg-blue-600
+          {% else %}bg-gray-800{% endif %}">
         {{ message }}
       </div>
     {% endfor %}
   </div>
 {% endif %}
 
-<!-- ✅ Hero Slider -->
-<!-- Full Width & Height Swiper Slider -->
+<!-- Hero Slider -->
 <div class="w-full h-screen overflow-hidden">
   <div class="swiper mySwiper w-full h-full">
     <div class="swiper-wrapper">
-
       {% for slide in hero_slides %}
         {% if slide.image %}
-          <div class="swiper-slide relative w-full h-screen" 
+          <div class="swiper-slide relative w-full h-screen"
                style="background-image: url('{{ slide.image.url }}'); background-size: cover; background-position: center;">
-
-            <!-- Overlay -->
             <div class="absolute inset-0 bg-black bg-opacity-50 z-10"></div>
-
-            <!-- Content -->
             <div class="absolute inset-0 flex items-center justify-center z-20 text-center text-white px-4">
               <div class="max-w-4xl w-full">
                 <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">{{ slide.headline }}</h2>
-
                 {% if slide.subtext %}
-                  <p class="text-base sm:text-lg md:text-xl mb-4">{{ slide.subtext }}</p>
+                  <p class="text-base sm:text-lg md:text-xl mb-6">{{ slide.subtext }}</p>
                 {% endif %}
-
                 {% if slide.button_text and slide.button_link %}
-                  <a href="{{ slide.button_link }}"
-                     class="inline-block mt-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-all duration-300">
+                  <a href="{{ slide.button_link }}" class="inline-block mt-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-all duration-300">
                     {{ slide.button_text }}
                   </a>
                 {% endif %}
@@ -219,108 +198,91 @@
           </div>
         {% endif %}
       {% endfor %}
-
     </div>
-
-    <!-- Swiper Controls -->
     <div class="swiper-button-next text-white"></div>
     <div class="swiper-button-prev text-white"></div>
     <div class="swiper-pagination"></div>
   </div>
 </div>
 
-
-
-
-
-<!-- ✅ Product Grid -->
+<!-- Product Grid -->
 <section class="products max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-    {% for product in products %}
+  {% for product in products %}
     <div class="product text-center">
-        <img src="{{ product.image.url }}" class="w-full h-48 object-cover rounded">
-        <h3 class="mt-2 text-lg font-semibold">{{ product.name }}</h3>
-        <p class="text-green-600">₹{{ product.price }}</p>
-        <small class="text-gray-500">{{ product.category.name }}</small>
-        <form method="post" action="{% url 'add_to_cart' product.id %}" class="mt-2">
-            {% csrf_token %}
-            <button type="submit" class="px-4 py-1 bg-blue-500 text-white rounded">Add to Cart</button>
-        </form>
+      <img src="{{ product.image.url }}" class="w-full h-48 object-cover rounded" />
+      <h3 class="mt-2 text-lg font-semibold">{{ product.name }}</h3>
+      <p class="text-green-600">₹{{ product.price }}</p>
+      <small class="text-gray-500">{{ product.category.name }}</small>
+      <form method="post" action="{% url 'add_to_cart' product.id %}" class="mt-2">
+        {% csrf_token %}
+        <button type="submit" class="px-4 py-1 bg-blue-500 text-white rounded">Add to Cart</button>
+      </form>
     </div>
-    {% endfor %}
+  {% endfor %}
 </section>
 
-<!-- ✅ Secondary Hero Section -->
+<!-- Secondary Hero Section -->
 <section class="flex flex-col md:flex-row items-center gap-8 max-w-7xl mx-auto px-4 py-12">
-    <div class="md:w-1/2">
-        <h2 class="text-2xl font-bold">{{ secondary_hero.heading }}</h2>
-        <p class="mt-2 text-gray-700">{{ secondary_hero.sub_text }}</p>
-    </div>
-    <div class="md:w-1/2">
-        <img src="{{ secondary_hero.image.url }}" alt="Secondary Hero" class="w-full h-auto rounded">
-    </div>
+  <div class="md:w-1/2">
+    <h2 class="text-2xl font-bold">{{ secondary_hero.heading }}</h2>
+    <p class="mt-2 text-gray-700">{{ secondary_hero.sub_text }}</p>
+  </div>
+  <div class="md:w-1/2">
+    <img src="{{ secondary_hero.image.url }}" alt="Secondary Hero" class="w-full h-auto rounded" />
+  </div>
 </section>
 
-<!-- ✅ Events Slider -->
-<section class="pb-2 pt-1 px-4 sm:px-6 md:px-10 lg:px-20 bg-gradient-to-br from-green-50 via-white to-green-100">
-  <h2 class="text-3xl sm:text-4xl font-extrabold text-center text-green-800 mb-6 tracking-wide">
+<!-- Events Slider -->
+<section class="pb-8 pt-6 px-6 sm:px-12 md:px-20 lg:px-32 bg-gradient-to-br from-green-50 via-white to-green-100">
+  <h2 class="text-4xl sm:text-5xl font-extrabold text-center text-green-900 mb-10 tracking-widest drop-shadow-md select-none">
     🌿 Our Featured Events
   </h2>
 
   <div class="swiper myEventSwiper">
     <div class="swiper-wrapper">
       {% for event in events %}
-      <div class="swiper-slide p-3 sm:p-5">
-        <div class="flex flex-col md:flex-row items-center bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border border-green-100 p-6 sm:p-8 gap-6 hover:shadow-green-300 transition duration-300">
-          <div class="md:w-1/2 w-full overflow-hidden rounded-2xl">
-            <img src="{{ event.image.url }}" alt="{{ event.title }}" class="rounded-2xl w-full h-auto object-cover hover:scale-105 transition duration-500" />
-          </div>
-          <div class="md:w-1/2 w-full text-center md:text-left">
-            <h3 class="text-2xl sm:text-3xl font-bold text-green-700 mb-3">{{ event.title }}</h3>
-            <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-3">{{ event.description }}</p>
+        <div class="swiper-slide p-4 sm:p-6">
+          <div class="flex flex-col md:flex-row items-center bg-white/95 backdrop-blur-md rounded-3xl shadow-lg border border-green-200 p-8 gap-8 hover:shadow-green-400 transition duration-400 ease-in-out">
+            <div class="md:w-1/2 w-full overflow-hidden rounded-3xl shadow-md hover:shadow-xl transition-shadow duration-500 aspect-w-16 aspect-h-9">
+              <img src="{{ event.image.url }}" alt="{{ event.title }}" class="rounded-3xl w-full h-full object-cover hover:scale-105 transform transition duration-500" />
+            </div>
+            <div class="md:w-1/2 w-full text-center md:text-left">
+              <h3 class="text-3xl sm:text-4xl font-extrabold text-green-800 mb-4 leading-tight">{{ event.title }}</h3>
+              <p class="text-gray-700 text-base sm:text-lg leading-relaxed tracking-wide">{{ event.description }}</p>
+            </div>
           </div>
         </div>
-      </div>
       {% endfor %}
     </div>
 
-    <!-- Swiper Navigation -->
-    <div class="flex justify-center mt-4 gap-4">
-      <div class="swiper-button-prev custom-swiper-btn"></div>
-      <div class="swiper-button-next custom-swiper-btn"></div>
+    <div class="flex justify-center mt-8 gap-6">
+      <div class="swiper-button-prev custom-swiper-btn bg-green-200 hover:bg-green-300 text-green-700 rounded-full w-12 h-12 flex items-center justify-center shadow-md cursor-pointer transition duration-300">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      </div>
+      <div class="swiper-button-next custom-swiper-btn bg-green-200 hover:bg-green-300 text-green-700 rounded-full w-12 h-12 flex items-center justify-center shadow-md cursor-pointer transition duration-300">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ✅ Newsletter Section -->
+<!-- Newsletter Section -->
 <section class="pt-4 pb-10 bg-gradient-to-r from-green-100 via-white to-green-100 text-center">
   <div class="max-w-3xl mx-auto px-4">
     <h2 class="text-4xl font-extrabold text-gray-800 mb-3 animate-fade-in-up">Stay Updated!</h2>
     <p class="text-lg text-gray-600 mb-6 animate-fade-in-up">Subscribe to our newsletter for the latest offers & events.</p>
-    
+
     <form method="POST" action="{% url 'subscribe_newsletter' %}" class="flex gap-2">
       {% csrf_token %}
       <input type="email" name="email" required placeholder="Enter your email"
-            class="px-4 py-2 border border-gray-300 rounded-lg w-full" />
-      <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-        Subscribe
-      </button>
+             class="px-4 py-2 border border-gray-300 rounded-lg w-full" />
+      <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Subscribe</button>
     </form>
-
-    {% if messages %}
-    <div class="fixed top-5 right-5 z-50 space-y-2">
-      {% for message in messages %}
-        <div class="bg-green-500 text-white font-semibold px-6 py-3 rounded shadow-lg animate-bounce-in-down">
-          {{ message }}
-        </div>
-      {% endfor %}
-    </div>
-    {% endif %}
   </div>
 </section>
 
-
-
-<footer class="bg-gray-900 text-white py-10">
+<!-- Footer -->
+  <footer class="bg-gray-900 text-white py-10 mt-10">
     <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
       <!-- Quick Links -->
       <div>
@@ -331,8 +293,6 @@
           <li><a href="/contact/" class="hover:text-white">Contact</a></li>
         </ul>
       </div>
-
-    
 
       <!-- Social Links -->
       <div>
@@ -351,63 +311,64 @@
       </div>
     </div>
   </footer>
-<!-- ✅ JS Scripts -->
-  <!-- Toggle Script -->
-
-<script>
-  const menuBtn = document.getElementById('mobile-menu-button');
-  const mobileMenu = document.getElementById('mobile-menu');
-
-  menuBtn.addEventListener('click', () => {
-    mobileMenu.classList.toggle('hidden');
-  });
-</script>
- 
-<!-- Swiper JS -->
-
-<script>
-  // Hide flash messages after 3 seconds
-  setTimeout(() => {
-    const messages = document.querySelectorAll('.fixed.top-5');
-    messages.forEach(msg => msg.remove());
-  }, 3000);
-</script>
 
 
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script>
-  var swiper = new Swiper(".mySwiper", {
-    loop: true,
-    autoplay: {
-      delay: 4000,
-      disableOnInteraction: false,
-    },
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-    },
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
-  });
-
-</script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
 <script>
-  var swiper = new Swiper(".myEventSwiper", {
-    loop: true,
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
-    spaceBetween: 20,
-    slidesPerView: 1,
-    breakpoints: {
-      768: {
-        slidesPerView: 1,
+  document.addEventListener("DOMContentLoaded", function() {
+    const toggleBtn = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    if(toggleBtn && mobileMenu){
+      toggleBtn.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
+    }
+
+    // Initialize Swiper for hero slider
+    const heroSwiper = new Swiper(".mySwiper", {
+      loop: true,
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
       },
-    },
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+      },
+      effect: 'fade',
+      fadeEffect: {
+        crossFade: true
+      }
+    });
+
+    // Initialize Swiper for events slider - One card per slide
+    const eventSwiper = new Swiper(".myEventSwiper", {
+      slidesPerView: 1,
+      spaceBetween: 30,
+      loop: true,
+      navigation: {
+        nextEl: ".swiper-button-next.custom-swiper-btn",
+        prevEl: ".swiper-button-prev.custom-swiper-btn",
+      },
+      autoplay: {
+        delay: 6000,
+        disableOnInteraction: false,
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 1, // still one card on small screens
+        },
+        1024: {
+          slidesPerView: 1, // one card on large screens as well
+        }
+      }
+    });
   });
 </script>
 

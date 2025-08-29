@@ -1,7 +1,7 @@
 {% extends 'index.html' %}
 {% block content %}
 <div style="min-height: 100vh; background: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1470&q=80') no-repeat center center/cover; display: flex; align-items: center; justify-content: center; font-family: 'Segoe UI', sans-serif;">
-  <div style="background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); padding: 40px 30px; border-radius: 15px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2); width: 100%; max-width: 400px;">
+  <div style="background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); padding: 40px 30px; border-radius: 15px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2); width: 100%; max-width: 450px;">
 
     <h2 style="font-size: 28px; font-weight: 600; color: #2f855a; text-align: center; margin-bottom: 25px;">
       🌸 Welcome Back
@@ -9,15 +9,27 @@
 
     <form method="POST">
       {% csrf_token %}
-      <div style="margin-bottom: 20px;">
-        {{ form.as_p }}
+
+      <!-- Username -->
+      <div style="margin-bottom: 25px;">
+        <label style="display: block; font-size: 16px; margin-bottom: 8px; color: #2f855a;">Username</label>
+        <input type="text" name="username" style="width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px;"/>
       </div>
-      <button type="submit" style="width: 100%; background-color: #38a169; border: none; color: white; padding: 12px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease;">
+
+      <!-- Password -->
+      <div style="margin-bottom: 25px;">
+        <label style="display: block; font-size: 16px; margin-bottom: 8px; color: #2f855a;">Password</label>
+        <input type="password" name="password" style="width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px;"/>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" style="width: 100%; background-color: #38a169; border: none; color: white; padding: 14px; font-size: 18px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease;">
         Login
       </button>
     </form>
 
-    <p style="margin-top: 15px; text-align: center;">
+    <!-- Links -->
+    <p style="margin-top: 20px; text-align: center;">
       <a href="{% url 'password_reset' %}" style="color: #2b6cb0; text-decoration: none;">Forgot Password?</a>
     </p>
 

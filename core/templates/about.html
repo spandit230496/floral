@@ -1,0 +1,12 @@
+{% extends "index.html" %}
+
+{% block content %}
+<section class="max-w-4xl mx-auto px-6 py-16 text-gray-800">
+  <div class="bg-white rounded-lg shadow-lg p-10 border border-green-200">
+    <h1 class="text-4xl font-extrabold mb-6 text-green-700 tracking-wide">{{ about.title }}</h1>
+    <div class="prose prose-green max-w-none text-lg leading-relaxed">
+      {{ about.content|linebreaks }}
+    </div>
+  </div>
+</section>
+{% endblock %}

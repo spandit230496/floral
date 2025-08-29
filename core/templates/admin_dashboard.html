@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+    }
+    .stats {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    .stat-box {
+      padding: 20px;
+      border-radius: 8px;
+      background-color: #f0f0f0;
+      width: 180px;
+      text-align: center;
+      box-shadow: 1px 1px 6px #ccc;
+    }
+    .stat-box h2 {
+      font-size: 36px;
+      margin: 0;
+      color: #2c7a7b;
+    }
+    .stat-box p {
+      margin: 5px 0 0 0;
+      font-weight: bold;
+      color: #4a5568;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Admin Dashboard</h1>
+
+  <div class="stats">
+    <div class="stat-box">
+      <h2>{{ product_count }}</h2>
+      <p>Total Products</p>
+    </div>
+    <div class="stat-box">
+      <h2>{{ user_count }}</h2>
+      <p>Total Users</p>
+    </div>
+    <div class="stat-box">
+      <h2>{{ payment_count }}</h2>
+      <p>Total Payments</p>
+    </div>
+  </div>
+
+  <h2>Sales Over Time</h2>
+  <canvas id="salesChart" width="800" height="400"></canvas>
+
+  <script>
+    const ctx = document.getElementById('salesChart').getContext('2d');
+
+    // Prepare labels and data arrays from Django context
+    const labels = [
+      {% for item in sell_counts %}
+        "{{ item.day }}",
+      {% endfor %}
+    ];
+
+    const data = [
+      {% for item in sell_counts %}
+        {{ item.total }},
+      {% endfor %}
+    ];
+
+    const salesChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Sales per Day',
+          data: data,
+          borderColor: 'rgba(54, 162, 235, 1)',
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: 5,
+          pointHoverRadius: 7,
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Date'
+            }
+          },
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Number of Sales'
+            },
+            ticks: {
+              precision: 0
+            }
+          }
+        },
+        responsive: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+          },
+          tooltip: {
+            enabled: true
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
